@@ -183,9 +183,13 @@ max - 19510049
 
 3. Write a query that, for every station_name, has the amount of trips that started there and the amount of trips that ended there. (Hint, use two temporary tables, one that counts the amount of starts, the other that counts the number of ends, and then join the two.) 
 ```
-SELECT count(*)
-FROM bigquery-public-data.new_york_citibike.citibike_trips
-GROUP BY end_station_name
+SELECT start_station_name as Station, start_count, end_count
+FROM  (SELECT start_station_name, count(*) as start_count
+  FROM bigquery-public-data.new_york_citibike.citibike_trips
+  GROUP BY start_station_name) t1 left join (SELECT end_station_name, count(*) as end_count
+  FROM bigquery-public-data.new_york_citibike.citibike_trips
+  GROUP BY end_station_name) t2 on t1.start_station_name = t2.end_station_name
+
 
 ```
 # The next section is the Google Colab section.  
